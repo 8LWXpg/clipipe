@@ -54,6 +54,7 @@ local IN_PROGRESS = {}
 
 -- State for the background job
 local state = {
+  key = nil,
   proc = nil,
   buffer = {},
   request = false,
@@ -129,6 +130,7 @@ local function notify(msg, level)
 end
 
 local function reset(proc)
+  state.key = nil
   state.proc = nil
   state.buffer = {}
   state.request = false
@@ -180,6 +182,9 @@ local function start()
     table.insert(cmd, "--keep-line-endings")
   end
 
+  local key = {}
+  state.key = key
+
   -- Run clipipe
   local ok, proc = pcall(vim.system, cmd, {
       text = true,
@@ -187,11 +192,14 @@ local function start()
       stderr = true,
       -- Output handler
       stdout = function(err, data)
+        if state.key ~= key then
+          return
+        end
         if err then
           notify_error("couldn't read stdout", err)
           return
         end
-        if not data or not state.proc then
+        if not data then
           return
         end
         -- Does this chunk complete a line?
@@ -237,6 +245,9 @@ local function start()
       end,
     },
     function(obj)
+      if state.key ~= key then
+        return
+      end
       local cb = state.callback
       reset()
 
@@ -315,7 +326,6 @@ local function transact(request)
   ok = vim.wait(config.timeout, function() return state.response ~= nil end, config.interval)
   if not ok then
     reset(state.proc)
-    state.request = false
     return nil, "timed out waiting for response"
   end
 
