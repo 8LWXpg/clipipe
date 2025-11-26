@@ -107,12 +107,12 @@ local clipipe = require 'clipipe'
 vim.g.clipboard = {
   name = "clipipe",
   copy = {
-    ["+"] = function(lines) M.copy(lines, '+') end,
-    ["*"] = function(lines) M.copy(lines, '*') end,
+    ["+"] = function(lines) clipipe.copy(lines, '+') end,
+    ["*"] = function(lines) clipipe.copy(lines, '*') end,
   },
   paste = {
-    ["+"] = function() return M.paste('+') end,
-    ["*"] = function() return M.paste('*') end,
+    ["+"] = function() return clipipe.paste('+') end,
+    ["*"] = function() return clipipe.paste('*') end,
   }
 }
 ```
