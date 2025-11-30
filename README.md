@@ -36,6 +36,9 @@ Install this repository with your manager of choice.  For example, using
 require 'lazy'.setup {
   {
     'bkoropoff/clipipe',
+    -- Only enable this plugin in Windows and WSL without SSH
+    cond = os.getenv('SSH_TTY') == nil and
+      (vim.fn.has('wsl') or vim.fn.has('win32')),
     opts = {
       -- Optional configuration, defaults shown here:
       path = nil, -- clipipe binary
