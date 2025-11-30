@@ -37,7 +37,7 @@ require 'lazy'.setup {
   {
     'bkoropoff/clipipe',
     -- Only enable this plugin in Windows and WSL without SSH
-    cond = os.getenv('SSH_TTY') == nil and
+    cond = vim.env.SSH_TTY == nil and
       (vim.fn.has('wsl') or vim.fn.has('win32')),
     opts = {
       -- Optional configuration, defaults shown here:
